@@ -1,18 +1,16 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-var ReactDataGrid = require('react-data-grid');
+const ReactDataGrid = require('react-data-grid');
 const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
+import ReactDataGridPlugins from 'react-data-grid/addons';
+const exampleWrapper = require('../../../components/exampleWrapper');
+const React = require('react');
 
-const DataGrid = React.createClass({
+const Example = React.createClass({
   getInitialState() {
     this._columns = [
       {
         key: 'id',
         name: 'ID',
-        width: 80,
-        filterable: true,
-        sortable: true
+        width: 80
       },
       {
         key: 'task',
@@ -122,4 +120,17 @@ const DataGrid = React.createClass({
   }
 });
 
-ReactDOM.render(<DataGrid/>, document.getElementById('app'));
+const exampleDescription = (
+  <div>
+    <p>While ReactDataGrid does not provide the ability to sort or filter directly, it does provide hooks that allow you to provide your own sort and filter function. This is done via the <code>onGridSort</code> and <code>onAddFilter</code> props. To enable sorting for a given column, set <code>column.sortable = true</code> for that column, to enable filtering for a given column, set <code>column.filterable = true</code> for that column. Now when the header cell is clicked for that column, <code>onGridSort</code> will be triggered passing the column name and the sort direction, when the filterable cell has a new filter value entered for that column, <code>onAddFilter</code> will be triggered passing the filter key and value.
+    </p>
+  </div>
+);
+
+module.exports = exampleWrapper({
+  WrappedComponent: Example,
+  exampleName: 'Filterable Sortable Columns Example',
+  exampleDescription,
+  examplePath: './scripts/example16-filterable-sortable-grid.js',
+  examplePlaygroundLink: undefined
+});
