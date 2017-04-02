@@ -7,37 +7,38 @@ class Listing:
     address = ''
 
 allListings = {}
+relevantKeys = ['Mls#','List', 'Maint', 'Apx Sqft', 'Apx Age', 'Bedrooms', 'Rms', 'Address', 'Exposure', 'Level', 'Washrooms', 'Taxes', 'Prkg Incl', 'Locker','TourLink' ]
 
 def populate_keys():
     for item in items:
         for label in item.find_all('label'):
             key = label.get_text().title().replace(':', '')
             allListings[key] = ''
-    allListings['tourLink'] = ''
-    allListings['address'] = ''
+    allListings['TourLink'] = ''
+    allListings['Address'] = ''
 
 def parse_item(item):
     listing = {}
     link = item.find_all('a', attrs={'class': 'tour link'})
-    listing['tourLink'] = link[0]['href'] if len(link) > 0 else ''
+    listing['TourLink'] = link[0]['href'] if len(link) > 0 else ''
 
     boldText = item.find_all('span', attrs={'class': 'value', 'style': "font-weight:bold"})
     try:
-        listing['address'] = boldText[0].get_text() +' '+ boldText[1].get_text()
+        listing['Address'] = boldText[0].get_text() +' '+ boldText[1].get_text()
     except Exception as ex:
         print 'boldText'
 
     for label in item.find_all('label'):
-        key = label.get_text().lower().replace(':','')
-        #print key + ' ' + label.findNext('span').get_text()
-        listing[key] = label.findNext('span').get_text()
+        key = label.get_text().title().replace(':','')
+        if (key in relevantKeys):
+            listing[key] = label.findNext('span').get_text()
 
     return listing
 
 def write_to_file():
     with open('househunting.csv', 'w') as csvfile:
         fieldnames = ['first_name', 'last_name']
-        writer = csv.DictWriter(csvfile, fieldnames=allListings.keys())
+        writer = csv.DictWriter(csvfile, fieldnames=relevantKeys)
         writer.writeheader()
 
         for listing in parsedListings:
